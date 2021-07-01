@@ -1,5 +1,10 @@
-#ifndef __S4B_2_0_PINS_H
-#define __S4B_2_0_PINS_H
+#ifndef __CONFIG_H_
+#define __CONFIG_H_
+
+// generic config values
+#define BOARD_VOLTAGE           3.3 // The voltage of the main processor
+#define CURRENT_SENSE_RESISTOR  0.2 // Value of the board's current calculation resistor. An incorrect value here will cause current inaccuracies
+
 
 /*
 // * = F103C8-CB    | DIGITAL | ANALOG | USART      | TWI       | SPI        | SPECIAL   |
@@ -72,12 +77,19 @@
 #define LED_PIN PC13
 
 // Motor mappings
-#define COIL_A_DIR_1        PB6
-#define COIL_A_DIR_2        PB7
-#define COIL_B_DIR_1        PB8
-#define COIL_B_DIR_2        PB9
-#define COIL_A_POWER_OUTPUT PB4
-#define COIL_B_POWER_OUTPUT PB5
+#define COIL_A_DIR_1        PB8
+#define COIL_A_DIR_2        PB9
+#define COIL_B_DIR_1        PB6
+#define COIL_B_DIR_2        PB7
+/**
+ * Filter schematic
+ * 
+ * VREF ---|R|----uC
+ *       |
+ *       +--|C|  
+*/
+#define COIL_A_PWM PB4 // U2
+#define COIL_B_PWM PB5 // U4
 
 // Encoder SPI interface - This is all defined in the platform specific variant.h as: PIN_SPI_SS, PIN_SPI_MOSI, PIN_SPI_MISO, PIN_SPI_SCK 
 #define ENCODER_SS   PIN_SPI_SS
@@ -94,4 +106,4 @@
 #define CAN_IN_PIN  PA11
 #define CAN_OUT_PIN PA12
 
-#endif //__S4B_2_0_PINS_H
+#endif //__CONFIG_H_

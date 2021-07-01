@@ -3,7 +3,7 @@
 
 #include "Arduino.h"
 #include "SimpleFOC.h"
-#include "s42b-2.0-pins.h"
+#include "config.h"
 
 
 // constants

@@ -1,17 +1,13 @@
 #include <Arduino.h>
 
-#include "s42b-2.0-pins.h" // s42b 2.0 specific details
+#include "config.h" // s42b 2.0 specific details
 
 #include "SimpleFOC.h"
 #include "TLE5012b.h"
 
 TLE5012B sensor = TLE5012B();
 
-//  StepperDriver4PWM( int ph1A,int ph1B,int ph2A,int ph2B, int en1 (optional), int en2 (optional))
-//  - ph1A, ph1B - phase 1 pwm pins
-//  - ph2A, ph2B - phase 2 pwm pins
-//  - en1, en2  - enable pins (optional input)
-StepperDriver4PWM driver = StepperDriver4PWM(COIL_A_DIR_1, COIL_A_DIR_2, COIL_B_DIR_1, COIL_B_DIR_2, COIL_A_POWER_OUTPUT, COIL_B_POWER_OUTPUT);
+StepperDriver2PWM driver = StepperDriver2PWM(COIL_A_PWM, COIL_A_DIR_1, COIL_A_DIR_2, COIL_B_PWM, COIL_B_DIR_1, COIL_B_DIR_2, NOT_SET, NOT_SET);
 
 // 200 steps/4 poles = 50 pole pairs
 StepperMotor motor = StepperMotor(50, 2.2);
@@ -32,7 +28,7 @@ void setup() {
   sensor.init();
 
   // power supply voltage [V]
-  driver.pwm_frequency = 50000;
+  // driver.pwm_frequency = 50000;
   driver.voltage_power_supply = 12;
   // Max DC voltage allowed - default voltage_power_supply
   // driver init
@@ -49,7 +45,8 @@ void setup() {
   motor.foc_modulation = FOCModulationType::SpaceVectorPWM;
 
   // set control loop type to be used
-  motor.controller = MotionControlType::velocity;
+  motor.controller = MotionControlType::angle;
+  motor.torque_controller = TorqueControlType::foc_current;
 
   motor.useMonitoring(Serial);
 
@@ -57,10 +54,11 @@ void setup() {
   commander.add('C',onPid,"PID vel");
   commander.add('L',onLpf,"LPF vel");
   commander.add('T',onTarget,"target vel");
-  motor.monitor_downsample = 0;
+  // motor.monitor_downsample = 0;
 
   motor.voltage_sensor_align = 9;
   motor.current_limit = 1800;
+  motor.velocity_limit = 1000;
 
   // initialize motor
   motor.init();
@@ -81,6 +79,5 @@ void loop() {
     // velocity control loop function
     motor.monitor();
 
-    // setting the target velocity or 2rad/s
-    motor.move(20);
+    motor.move(motor.shaft_angle_sp + 2);
 }
