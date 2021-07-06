@@ -12,6 +12,7 @@ StepperDriver2PWM driver = StepperDriver2PWM(COIL_A_PWM, COIL_A_DIR_1, COIL_A_DI
 // 200 steps/4 poles = 50 pole pairs
 StepperMotor motor = StepperMotor(50, 2.2);
 
+// Commander interface constructor
 Commander commander = Commander(Serial);
 void doMotor(char* cmd) { commander.motor(&motor, cmd); }
 void onPid(char* cmd){commander.pid(&motor.PID_velocity, cmd);}
@@ -22,6 +23,8 @@ void setup() {
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, HIGH);
 
+  Serial.setTx(USART1_TX);
+  Serial.setRx(USART1_RX);
   Serial.begin(115200);
   Serial.println("Init begin...");
 
@@ -57,8 +60,8 @@ void setup() {
   // motor.monitor_downsample = 0;
 
   motor.voltage_sensor_align = 9;
-  motor.current_limit = 1800;
-  motor.velocity_limit = 1000;
+  motor.current_limit = 180;
+  motor.velocity_limit = 10;
 
   // initialize motor
   motor.init();
@@ -71,13 +74,24 @@ void setup() {
 
 }
 
+bool dir = true;
+
 void loop() {
     commander.run();
+
     // FOC algorithm function
     motor.loopFOC();
 
     // velocity control loop function
     motor.monitor();
 
-    motor.move(motor.shaft_angle_sp + 2);
+    if (dir) {
+        motor.move(motor.shaft_angle_sp + 1);
+        if (motor.shaft_angle_sp > 360)
+            dir = !dir;
+    } else {
+        motor.move(motor.shaft_angle_sp - 1);
+        if (motor.shaft_angle_sp < 0)
+            dir = !dir;
+    }
 }
