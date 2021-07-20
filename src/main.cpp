@@ -72,6 +72,10 @@ void setup() {
   Serial.println("Done. RUNNING!");
   digitalWrite(LED_PIN, LOW);
 
+#define N 2
+#if N == 2
+  motor.move(360);
+#endif
 }
 
 bool dir = true;
@@ -83,15 +87,19 @@ void loop() {
     motor.loopFOC();
 
     // velocity control loop function
-    motor.monitor();
+    //motor.monitor();
 
+#if N == 0
+    motor.move(motor.shaft_angle_sp + 2);
+#elif  N == 1
     if (dir) {
-        motor.move(motor.shaft_angle_sp + 1);
-        if (motor.shaft_angle_sp > 360)
+        motor.move(360);
+        if (motor.shaft_angle >= 360)
             dir = !dir;
     } else {
-        motor.move(motor.shaft_angle_sp - 1);
-        if (motor.shaft_angle_sp < 0)
+        //motor.move(0);
+        if (motor.shaft_angle <= 0)
             dir = !dir;
     }
+#endif
 }
