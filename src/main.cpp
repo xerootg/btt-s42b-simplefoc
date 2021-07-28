@@ -49,7 +49,7 @@ void setup() {
 
   // set control loop type to be used
   motor.controller = MotionControlType::angle;
-  motor.torque_controller = TorqueControlType::foc_current;
+  motor.torque_controller = TorqueControlType::voltage;//foc_current;
 
   motor.useMonitoring(Serial);
 
@@ -60,7 +60,7 @@ void setup() {
   // motor.monitor_downsample = 0;
 
   motor.voltage_sensor_align = 9;
-  motor.current_limit = 180;
+  motor.current_limit = 1800;
   motor.velocity_limit = 10;
 
   // initialize motor
@@ -72,8 +72,8 @@ void setup() {
   Serial.println("Done. RUNNING!");
   digitalWrite(LED_PIN, LOW);
 
-#define N 2
-#if N == 2
+#define TEST (-1)
+#if TEST == 2
   motor.move(360);
 #endif
 }
@@ -87,13 +87,13 @@ void loop() {
     motor.loopFOC();
 
     // velocity control loop function
-    //motor.monitor();
+    motor.monitor();
 
-#if N == 0
+#if TEST == 0
     motor.move(motor.shaft_angle_sp + 2);
-#elif  N == 1
+#elif  TEST == 1
     if (dir) {
-        motor.move(360);
+        //motor.move(360);
         if (motor.shaft_angle >= 360)
             dir = !dir;
     } else {
