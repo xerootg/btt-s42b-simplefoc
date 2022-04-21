@@ -83,15 +83,15 @@
 #define COIL_B_DIR_2        PB7
 /**
  * Filter schematic
- * 
+ *
  * VREF ---|R|----uC
  *       |
- *       +--|C|  
+ *       +--|C|
 */
 #define COIL_A_PWM PB4 // U2
 #define COIL_B_PWM PB5 // U4
 
-// Encoder SPI interface - This is all defined in the platform specific variant.h as: PIN_SPI_SS, PIN_SPI_MOSI, PIN_SPI_MISO, PIN_SPI_SCK 
+// Encoder SPI interface - This is all defined in the platform specific variant.h as: PIN_SPI_SS, PIN_SPI_MOSI, PIN_SPI_MISO, PIN_SPI_SCK
 #define ENCODER_SS   PIN_SPI_SS
 #define ENCODER_SCK  PIN_SPI_SCK
 #define ENCODER_MISO PIN_SPI_MISO
@@ -105,5 +105,8 @@
 // CAN bus pins
 #define CAN_IN_PIN  PA11
 #define CAN_OUT_PIN PA12
+
+#define USART1_TX PA9
+#define USART1_RX PA10
 
 #endif //__CONFIG_H_
